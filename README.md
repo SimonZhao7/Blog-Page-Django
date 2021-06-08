@@ -1,0 +1,1 @@
+### The Django version of the Flask Blog Page I previously created. ###
