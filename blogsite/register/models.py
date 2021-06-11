@@ -1,13 +1,12 @@
 from django.db import models
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+import json
 
 # Create your models here.
 
 
-class RegisterForm(UserCreationForm):
-    email = models.EmailField()
-
-    class Meta:
-        model = User
-        fields = ["email", "username", "password1", "password2"]
+class Profile(User):
+    profile_picture = models.TextField(default='/')
+    followers = models.TextField(default=json.dumps([]))
+    following = models.TextField(default=json.dumps([]))
+    friends = models.TextField(default=json.dumps([]))

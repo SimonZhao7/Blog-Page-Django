@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as user_login
 from django.contrib.auth.forms import AuthenticationForm
-from .models import RegisterForm, User
+from .models import Profile
+from .forms import RegisterForm
 
 # Create your views here.
 
@@ -11,9 +12,9 @@ def login(request):
     if request.POST.get('submit') == 'log in':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            user = User.objects.get(username=form.cleaned_data["username"])
+            user = Profile.objects.get(username=form.cleaned_data["username"])
             user_login(request, user)
-            return redirect('account/profile.html')
+            return redirect('/account/profile/')
     return render(request, "register/login.html", {"form": form})
 
 

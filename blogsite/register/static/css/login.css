@@ -2,7 +2,15 @@
     text-align: center;
 }
 
+.title{
+    font-size: 24px;
+}
+
 form {
-    text-align: left;
     display: inline-block;
+    width: 575px;
+}
+
+.content div{
+    text-align: left;
 }
