@@ -1,4 +1,31 @@
 {% extends "account/base.html" %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="">
+{% endblock %}
 {% block content %}
-<p>Profile</p>
+    <div class="profile">
+        <img src="">
+        <div class="profile-info">
+            <h1>{{ user.username }}</h1>
+            <div class="followers">
+                <p>{{ user.followers|length }}</p>
+                <p>{{ user.followers }}</p>
+                <p>Followers</p>
+                {% if viewed_user != user %}
+                    <form class="follow-button" method="post">
+                        <input type="submit" name="submit" value="{{ follow_value }}">
+                    </form>
+                {% endif %}
+            </div>
+            <div class="friends">
+                <p>{{ viewed_friends|length }}</p>
+                <p>Friends</p>
+            </div>
+        </div>
+        <div class="settings">
+            {% if viewed_user == user %}
+                <a href=""><button>Profile Settings</button></a>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

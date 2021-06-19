@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
-    'register.apps.RegisterConfig',
     'account.apps.AccountConfig',
 ]
 
@@ -83,6 +82,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'account.CustomUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
