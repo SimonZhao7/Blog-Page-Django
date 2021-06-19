@@ -6,10 +6,10 @@
     <div class="profile">
         <img src="">
         <div class="profile-info">
-            <h1>{{ user.username }}</h1>
+            <h1>{{ viewed_user.username }}</h1>
             <div class="followers">
-                <p>{{ user.followers|length }}</p>
-                <p>{{ user.followers }}</p>
+                <p>{{ viewed_user.followers|length }}</p>
+                <p>{{ viewed_user.followers }}</p>
                 <p>Followers</p>
                 {% if viewed_user != user %}
                     <form class="follow-button" method="post">
