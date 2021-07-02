@@ -4,16 +4,20 @@ from django.contrib.auth import authenticate, login as user_login, logout as use
 from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
 from .forms import RegisterForm
+from django.conf import settings
 # Create your views here.
 
 
 @login_required
 def profile(request, username):
     user = get_object_or_404(CustomUser, username=username)
+    print(settings.STATIC_URL)
     return render(request, 'account/profile.html', {"viewed_user": user})
 
 
 def login(request):
+    if request.user.is_authenticated:
+        return redirect('/' + request.user.username)
     form = AuthenticationForm()
     if request.POST.get('submit') == 'log in':
         form = AuthenticationForm(data=request.POST)
