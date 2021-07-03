@@ -6,7 +6,9 @@ import json
 
 
 class CustomUser(AbstractUser):
-    profile_picture = models.TextField(default='/')
-    followers = models.TextField(default=json.dumps([]))
-    following = models.TextField(default=json.dumps([]))
-    friends = models.TextField(default=json.dumps([]))
+    profile_picture = models.TextField()
+
+    # Add in Follower app
+    # followers = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    # following = models.TextField(default=json.dumps([]))
+    # friends = models.TextField(default=json.dumps([]))

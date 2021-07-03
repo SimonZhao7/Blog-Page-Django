@@ -1,0 +1,25 @@
+.container-fluid{
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+nav {
+    background-color: rgb(118, 178, 184);
+}
+
+.navbar-brand, .nav-link{
+    color: white !important;
+}
+
+.img-thumbnail {
+    background-color: rgb(118, 178, 184);
+}
+
+.title{
+    font-size: 24px;
+}
+
+.container div{
+    text-align: left;
+}

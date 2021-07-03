@@ -11,7 +11,6 @@ from django.conf import settings
 @login_required
 def profile(request, username):
     user = get_object_or_404(CustomUser, username=username)
-    print(settings.STATIC_URL)
     return render(request, 'account/profile.html', {"viewed_user": user})
 
 
@@ -41,6 +40,8 @@ def register(request):
     if request.POST.get('submit') == 'sign up':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            account = form.save(commit=False)
+            account.profile_picture = '/static/images/no-profile.png'
+            account.save()
             return redirect('/')
     return render(request, "account/register.html", {'form': form})

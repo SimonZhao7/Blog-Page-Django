@@ -1,8 +1,8 @@
 <!-- Navbar -->
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Home</a>
+        <a class="navbar-brand" href="{% url 'account:profile' user.username %}">Home</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -12,14 +12,14 @@
                 <a class="nav-link" aria-current="page" href="#">DMs</a>
                 <a class="nav-link" href="{% url 'account:logout' %}">Logout</a>
                 <a class="nav-link" href="#">Create Post</a>
-                <a class="nav-link" href="#" tabindex="-1" style="float: right;">Profile</a>
+                <a class="nav-link" href="{% url 'account:profile' user.username %}#" tabindex="-1" style="float: right;">Profile</a>
             </div>
         </div>
         <form class="d-flex justify-content-center" style="margin: 0;">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
+            <button class="btn btn-success" type="submit">Search</button>
         </form>
-        <a class="nav-link" href="#" style="padding: 0 0 0 10px">
+        <a class="nav-link" href="{% url 'account:profile' user.username %}" style="padding: 0 0 0 10px">
             <img src="{% static 'images/no-profile.png' %}" alt="profile-picture" style="width: 40px; height: 40px;">
         </a>
     </div>

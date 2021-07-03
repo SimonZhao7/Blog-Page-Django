@@ -1,31 +1,32 @@
 {% extends "account/home.html" %}
 {% block head %}
-    <link rel="stylesheet" type="text/css" href="">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
 {% endblock %}
 {% block content %}
     {% include "account/navbar.html" %}
-    <div class="profile">
-        <img src="">
-        <div class="profile-info">
-            <h1>{{ viewed_user.username }}</h1>
-            <div class="followers">
+    <div class="profile container-fluid col-6 mx-auto mt-2 p-3">
+        <img src="{{ viewed_user.profile_picture }}" class="img-thumbnail mx-3">
+        <div class="profile-info col-8">
+            <h1 class="px-2">{{ viewed_user.username }}</h1>
+            <div class="followers col-6 float-left">
                 <p>{{ viewed_user.followers|length }}</p>
                 <p>{{ viewed_user.followers }}</p>
                 <p>Followers</p>
                 {% if viewed_user != user %}
                     <form class="follow-button" method="post">
-                        <input type="submit" name="submit" value="{{ follow_value }}">
+                        <button type="submit" class="btn btn-info follow-btn" name="submit">Follow</button>
                     </form>
                 {% endif %}
             </div>
-            <div class="friends">
+            <div class="friends col-6 float-right">
                 <p>{{ viewed_friends|length }}</p>
                 <p>Friends</p>
             </div>
         </div>
-        <div class="settings">
+        <div class="settings col-3 text-center">
             {% if viewed_user == user %}
-                <a href=""><button>Profile Settings</button></a>
+                <a href=""><button class="btn btn-info mt-2">Profile Settings</button></a>
             {% endif %}
         </div>
     </div>
