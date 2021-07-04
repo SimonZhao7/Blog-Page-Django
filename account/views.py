@@ -18,7 +18,7 @@ def login(request):
     if request.user.is_authenticated:
         return redirect('/' + request.user.username)
     form = AuthenticationForm()
-    if request.POST.get('submit') == 'log in':
+    if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = CustomUser.objects.get(username=form.cleaned_data["username"])
@@ -37,7 +37,7 @@ def logout(request):
 
 def register(request):
     form = RegisterForm()
-    if request.POST.get('submit') == 'sign up':
+    if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             account = form.save(commit=False)

@@ -1,8 +1,15 @@
-{% extends "account/base.html" %}
-{% block content %}
-<p>Are you sure you want to log out?</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Logout</button>
-</form>
+{% extends "loggedin.html" %}
+{% block head %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/logout.css' %}">
+{% endblock %}
+{% block page-content %}
+<div class="logout">
+    <p>Are you sure you want to log out?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-info">Logout</button>
+    </form>
+</div>
+
 {% endblock %}

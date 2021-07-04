@@ -1,0 +1,14 @@
+.logout {
+    width: 30%;
+    padding: 50px;
+    background-color: white;
+    text-align: center;
+    margin: auto;
+    position: relative;
+    top: 50px;
+    border-radius: 25px;
+}
+
+.logout p {
+    font-size: 20px;
+}
