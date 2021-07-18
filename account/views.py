@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as user_login, logout as user_logout
+from django.contrib.auth import login as user_login, logout as user_logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 from .models import CustomUser
-from .forms import RegisterForm
+from .forms import RegisterForm, ChangeUsernameForm
 from django.conf import settings
 # Create your views here.
 
@@ -45,3 +46,15 @@ def register(request):
             account.save()
             return redirect('/')
     return render(request, "account/register.html", {'form': form})
+
+
+@login_required
+def change_username(request):
+    form = ChangeUsernameForm(user=request.user)
+    if request.method == 'POST':
+        form = ChangeUsernameForm(request.POST, user=request.user)
+        if form.is_valid():
+            request.user.username = form.cleaned_data['username']
+            request.user.save()
+            messages.success(request, 'You have successfully changed your username')
+    return render(request, "account/change_user.html", {'form': form})

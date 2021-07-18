@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
 {% endblock %}
 {% block page-content %}
-    <div class="profile container-fluid col-6 mx-auto mt-2 p-3">
+    <div class="c-page container-fluid col-6 mx-auto mt-2 p-3">
         <img src="{{ viewed_user.profile_picture }}" class="img-thumbnail mx-3">
         <div class="profile-info col-8">
             <h1 class="px-2">{{ viewed_user.username }}</h1>
@@ -25,7 +25,7 @@
         </div>
         <div class="settings col-3 text-center">
             {% if viewed_user == user %}
-                <a href=""><button class="btn btn-info mt-2">Profile Settings</button></a>
+                <a href="{% url 'account:change_username' %}"><button class="btn btn-info mt-2">Profile Settings</button></a>
             {% endif %}
         </div>
     </div>
