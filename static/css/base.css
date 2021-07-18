@@ -16,8 +16,12 @@ nav {
     background-color: rgb(118, 178, 184);
 }
 
-a {
-    color: white !important;
+.link {
+    color: white;
+}
+
+.link:hover {
+    text-decoration: none;
 }
 
 .title{

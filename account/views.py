@@ -4,7 +4,7 @@ from django.contrib.auth import login as user_login, logout as user_logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from .models import CustomUser
-from .forms import RegisterForm, ChangeUsernameForm
+from .forms import RegisterForm, ChangeUsernameForm, ChangePasswordForm
 from django.conf import settings
 # Create your views here.
 
@@ -58,3 +58,18 @@ def change_username(request):
             request.user.save()
             messages.success(request, 'You have successfully changed your username')
     return render(request, "account/change_user.html", {'form': form})
+
+
+@login_required
+def change_password(request):
+    form = ChangePasswordForm(user=request.user)
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST, user=request.user)
+        if form.is_valid():
+            request.user.set_password(form.cleaned_data['new_password'])
+            request.user.save()
+
+            # prevent logout
+            user_login(request, request.user)
+            messages.success(request, 'You have successfully changed your password')
+    return render(request, 'account/change_password.html', {'form': form})
