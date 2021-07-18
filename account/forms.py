@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
+from django.core.validators import EmailValidator
 from .models import CustomUser
 
 
@@ -57,3 +58,24 @@ class ChangePasswordForm(forms.Form):
 
         if len(new_pass) < 8:
             raise ValidationError('The password needs to be at least 8 characters long')
+
+
+class ChangeEmailForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+
+    email = forms.EmailField(label='New Email', validators=[EmailValidator(message='Invalid Email')])
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    def clean(self):
+        email = self.cleaned_data['email']
+        password = self.cleaned_data['password']
+
+        existing_users = CustomUser.objects.filter(email=email)
+
+        if not authenticate(username=self.user.username, password=password):
+            raise ValidationError('Incorrect Password')
+
+        if existing_users.count() != 0:
+            raise ValidationError('There is already an existing account with that email')
