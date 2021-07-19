@@ -45,7 +45,7 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             account = form.save(commit=False)
-            account.profile_picture = '/static/images/no-profile.png'
+            account.profile_picture = '/media/profile_pictures/no-profile.png'
             account.save()
             return redirect('/')
     return render(request, "account/register.html", {'form': form})
