@@ -1,8 +1,8 @@
-{% extends "account/change_user.html" %}
+{% extends 'account/change_user.html' %}
 {% load crispy_forms_tags %}
 {% block change-form %}
-<form class="form-group" method="post">
-    <legend>Change Password</legend>
+<form class="form-group" method="post" enctype="multipart/form-data">
+    <legend>Change Profile Picture</legend>
 
     {% if messages %}
     <div class="alert alert-success">
@@ -14,6 +14,6 @@
 
     {% csrf_token %}
     {{ form|crispy }}
-    <button type="submit" class="btn btn-info">Change Password</button>
+    <button class="btn btn-info">Change Profile Picture</button>
 </form>
 {% endblock %}

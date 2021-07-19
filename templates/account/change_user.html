@@ -8,11 +8,11 @@
             <a href="{% url 'account:change_username' %}" class="link"><button class="btn btn-info">Change Username</button></a>
             <a href="{% url 'account:change_password' %}" class="link"><button class="btn btn-info">Change Password</button></a>
             <a href="{% url 'account:change_email' %}" class="link"><button class="btn btn-info" >Change Email</button></a>
-            <a class="link"><button class="btn btn-info">Change Profile Picture</button></a>
+            <a href="{% url 'account:change_profile_pic' %}" class="link"><button class="btn btn-info">Change Profile Picture</button></a>
         </div>
         <div class="setting-form col-8">
+            {% block change-form %}
             <form class="form-group" method="post">
-                {% block change-form %}
                 <legend>Change Username</legend>
 
                 {% if messages %}
@@ -26,8 +26,8 @@
                 {% csrf_token %}
                 {{ form|crispy }}
                 <button class="btn btn-info">Change Username</button>
-                {% endblock %}
             </form>
+            {% endblock %}
         </div>
     </div>
 </div>

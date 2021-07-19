@@ -2,9 +2,10 @@
     float: right;
 }
 
-img {
+.profile-img {
     width: 200px;
     height: 200px;
+    border: rgb(118, 178, 184) solid 5px;
 }
 
 .follow-btn {

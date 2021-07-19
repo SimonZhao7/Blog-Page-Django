@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
-from django.core.validators import EmailValidator
+from django.core.validators import EmailValidator, FileExtensionValidator
 from .models import CustomUser
 
 
@@ -79,3 +79,14 @@ class ChangeEmailForm(forms.Form):
 
         if existing_users.count() != 0:
             raise ValidationError('There is already an existing account with that email')
+
+
+class ChangeProfilePicForm(forms.Form):
+    profile_pic = forms.FileField(
+        label='New Profile Picture',
+        validators=[FileExtensionValidator(
+                ['jpg', 'png'],
+                'Only .jpg and .png files are accepted'
+            )
+        ]
+    )

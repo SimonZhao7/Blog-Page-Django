@@ -1,12 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import json
 
 # Create your models here.
 
 
 class CustomUser(AbstractUser):
-    profile_picture = models.TextField()
+    profile_picture = models.FileField()
 
     # Add in Follower app
     # followers = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
