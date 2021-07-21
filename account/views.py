@@ -15,7 +15,23 @@ import os
 @login_required
 def profile(request, username):
     user = get_object_or_404(CustomUser, username=username)
-    return render(request, 'account/profile.html', {"viewed_user": user})
+
+    follow_value = 'Follow'
+    for follow in request.user.userfollowing_set.all():
+        if follow.following == user:
+            follow_value = 'Following'
+
+    if request.method == 'POST':
+        # try to create a new object with kwargs
+        new_following = request.user.userfollowing_set.get_or_create(user=request.user, following=user)
+
+        # if no new object is created delete it
+        if not new_following[1]:
+            new_following[0].delete()
+
+        # reloads to update button text change
+        return redirect('/' + user.username)
+    return render(request, 'account/profile.html', {"viewed_user": user, 'follow_value': follow_value})
 
 
 def login(request):

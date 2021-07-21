@@ -14,7 +14,8 @@
                 <p>Followers</p>
                 {% if viewed_user != user %}
                     <form class="follow-button" method="post">
-                        <button type="submit" class="btn btn-info follow-btn" name="submit">Follow</button>
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-info follow-btn" name="submit">{{ follow_value }}</button>
                     </form>
                 {% endif %}
             </div>
