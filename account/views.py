@@ -5,24 +5,22 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.contrib import messages
-from .models import CustomUser, UserFollowing
+from .models import CustomUser, UserFollowing, UserFriend
 from .forms import RegisterForm, ChangeUsernameForm, ChangePasswordForm, ChangeEmailForm, ChangeProfilePicForm
 import os
 # Create your views here.
 
 
-
 @login_required
 def profile(request, username):
     user = get_object_or_404(CustomUser, username=username)
-
-    follow_value = 'Follow'
-    for follow in request.user.userfollowing_set.all():
-        if follow.following == user:
-            follow_value = 'Following'
-
-    # get follower count
     followers = UserFollowing.objects.filter(following=user)
+    friends = UserFriend.objects.filter(user=user)
+
+    # checks to see if you are currently following the viewed user
+    follow_value = 'Follow'
+    if followers.filter(user=request.user).count() > 0:
+        follow_value = 'Following'
 
     if request.method == 'POST':
         # try to create a new object with kwargs
@@ -31,13 +29,20 @@ def profile(request, username):
         # if no new object is created delete it
         if not new_following[1]:
             new_following[0].delete()
-
-        # reloads to update button text change
+            # if the users were friends, they will no longer be friends
+            if friends.filter(friend=request.user).count() > 0:
+                request.user.userfriend_set.get(user=request.user, friend=user).delete()
+                user.userfriend_set.get(user=user, friend=request.user).delete()
+        else:
+            # if viewed user is following you back, you two become friends
+            if user.userfollowing_set.all().filter(following=request.user).count() > 0:
+                request.user.userfriend_set.create(user=request.user, friend=user)
+                user.userfriend_set.create(user=user, friend=request.user)
         return redirect('/' + user.username)
     return render(
         request,
         'account/profile.html',
-        {"viewed_user": user, 'follow_value': follow_value, 'followers': followers.count()}
+        {"viewed_user": user, 'follow_value': follow_value, 'followers': followers.count(), 'friends': friends.count()}
     )
 
 

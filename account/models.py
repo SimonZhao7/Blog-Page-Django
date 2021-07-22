@@ -17,3 +17,11 @@ class UserFollowing(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class UserFriend(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    friend = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='friend')
+
+    def __str__(self):
+        return self.user.username
