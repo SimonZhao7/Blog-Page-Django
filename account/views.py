@@ -5,7 +5,7 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.contrib import messages
-from .models import CustomUser
+from .models import CustomUser, UserFollowing
 from .forms import RegisterForm, ChangeUsernameForm, ChangePasswordForm, ChangeEmailForm, ChangeProfilePicForm
 import os
 # Create your views here.
@@ -21,6 +21,9 @@ def profile(request, username):
         if follow.following == user:
             follow_value = 'Following'
 
+    # get follower count
+    followers = UserFollowing.objects.filter(following=user)
+
     if request.method == 'POST':
         # try to create a new object with kwargs
         new_following = request.user.userfollowing_set.get_or_create(user=request.user, following=user)
@@ -31,7 +34,11 @@ def profile(request, username):
 
         # reloads to update button text change
         return redirect('/' + user.username)
-    return render(request, 'account/profile.html', {"viewed_user": user, 'follow_value': follow_value})
+    return render(
+        request,
+        'account/profile.html',
+        {"viewed_user": user, 'follow_value': follow_value, 'followers': followers.count()}
+    )
 
 
 def login(request):

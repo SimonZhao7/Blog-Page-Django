@@ -9,8 +9,7 @@
         <div class="profile-info col-8">
             <h1 class="px-2">{{ viewed_user.username }}</h1>
             <div class="followers col-6 float-left">
-                <p>{{ viewed_user.followers|length }}</p>
-                <p>{{ viewed_user.followers }}</p>
+                <p>{{ followers }}</p>
                 <p>Followers</p>
                 {% if viewed_user != user %}
                     <form class="follow-button" method="post">
