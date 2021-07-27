@@ -12,6 +12,7 @@
                 <a class="nav-link" aria-current="page" href="#">DMs</a>
                 <a class="nav-link" href="{% url 'account:logout' %}">Logout</a>
                 <a class="nav-link" href="#">Create Post</a>
+                <a class="nav-link" href="{% url 'chat:chat' %}" tabindex="-1" style="float: right;">Chat</a>
                 <a class="nav-link" href="{% url 'account:profile' user.username %}#" tabindex="-1" style="float: right;">Profile</a>
             </div>
         </div>

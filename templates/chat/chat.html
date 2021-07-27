@@ -1,0 +1,16 @@
+{% extends "loggedin.html" %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/chat.css' %}">
+{% endblock %}
+{% block page-content %}
+<div class="c-page chat container-fluid col-6 mx-auto mt-2 p-3">
+  <div class="chat-sidebar">
+    <h3 id="chat-header">Chat</h3>
+    <a id="create-link" href="{% url 'chat:create' %}"><button class="btn btn-info">Create Chat</button></a>
+  </div>
+  <div class="chat-content">
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "loggedin.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/chat.css' %}">
+{% endblock %}
+{% block page-content %}
+<div class="c-page chat container-fluid col-6 mx-auto mt-2 p-3">
+    <form class="form-group create-from" method="post">
+        <legend>Create Chat</legend>
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-info">Create Chat</button>
+    </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('.user-select').select2({required: true});
+    });
+</script>
+{% endblock %}
