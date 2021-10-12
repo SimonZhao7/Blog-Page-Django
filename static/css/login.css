@@ -1,0 +1,20 @@
+.login {
+    width: 35vw;
+    height: 30vh;
+    margin: auto;
+}
+
+.title {
+    font-size: 1.5vw;
+    text-align: center;
+}
+
+#login-button {
+    background: rgb(118, 178, 184);
+    border: rgb(118, 178, 184);
+}
+
+#login-button:hover {
+    background: rgb(86, 131, 135);
+    border: rgb(86, 131, 135);
+}

@@ -2,15 +2,21 @@
 {% block head %}
     {% load crispy_forms_tags %}
     {% load static %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
 {% block content %}
-<div>
-    <form method="post" class="form-group justify-content-center">
+<nav class="navbar navbar-expand-lg" style="height: 4vh;">
+</nav>
+<div class="login">
+    <form method="post" class="form-group justify-content-center mt-5">
         <p class="title">Log In</p>
         {% csrf_token %}
         {{ form|crispy }}
-        <p>Don't have an account? Create one <a href="/register">here</a></p>
-        <button type="submit" name="submit" value="log in" class="btn btn-primary btn-lg">Log In</button>
+
+        <div class="form-actions text-center">
+            <p>Don't have an account? Create one <a href="/register">here</a></p>
+            <button type="submit" id="login-button" class="btn btn-primary btn-lg">Log In</button>
+        </div>
     </form>
 </div>
 {% endblock %}
