@@ -8,6 +8,9 @@
   <div class="chat-sidebar">
     <h3 id="chat-header">Chat</h3>
     <a id="create-link" href="{% url 'chat:create' %}"><button class="btn btn-info">Create Chat</button></a>
+    {% for chat in chats %}
+      <button>{{ chat }}</button>
+    {% endfor %}
   </div>
   <div class="chat-content">
 

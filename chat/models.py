@@ -14,7 +14,7 @@ class Chat(models.Model):
 
 class Messages(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
-    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     message = models.TextField()
 
     # might need a time created for ordering purposes
