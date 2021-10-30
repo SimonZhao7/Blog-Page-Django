@@ -1,19 +1,29 @@
-{% extends "loggedin.html" %}
-{% load static %}
-{% block head %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/chat.css' %}">
+{% extends "chat/inbox.html" %}
+{% load crispy_forms_tags %}
+{% block chat-content %}
+{% for message in chat.messages_set.all %}
+    {% if message.sender == user %}
+        <p style="text-align: right;">Sender: {{ message.sender }}</p>
+        <p style="text-align: right;">Message: {{ message.message }}</p>
+    {% else %}
+        <p>Sender: {{ message.sender }}</p>
+        <p>Message: {{ message.message }}</p>
+    {% endif %}
+{% endfor %}
 {% endblock %}
-{% block page-content %}
-<div class="c-page chat container-fluid col-6 mx-auto mt-2 p-3">
-  <div class="chat-sidebar">
-    <h3 id="chat-header">Chat</h3>
-    <a id="create-link" href="{% url 'chat:create' %}"><button class="btn btn-info">Create Chat</button></a>
-    {% for chat in chats %}
-      <button>{{ chat }}</button>
+{% block msg %}
+<form method="post" class="msg-form">
+    {% csrf_token %}
+    {% for field in form.visible_fields %}
+        {{ field }}
     {% endfor %}
-  </div>
-  <div class="chat-content">
-
-  </div>
-</div>
+    <button class="btn btn-info" id="send-msg">Send Message</button>
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('.chat-content').scrollTop($('.chat-content').prop('scrollHeight'))
+    });
+</script>
 {% endblock %}

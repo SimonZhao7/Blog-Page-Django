@@ -1,5 +1,5 @@
 from django import forms
-from .models import Chat
+from .models import Chat, Messages
 from account.models import CustomUser
 from django.core.exceptions import ValidationError
 
@@ -44,3 +44,12 @@ class CreateChatForm(forms.Form):
             other_user_obj = CustomUser.objects.get(username=other_user)
             new_chat.users.add(other_user_obj)
         new_chat.save()
+
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Messages
+        fields = ['message']
+        widgets = {
+            'message': forms.Textarea(attrs={'rows': 1, 'class': 'form-field', 'style': 'resize: none; flex: 13;'})
+        }
