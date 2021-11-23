@@ -85,7 +85,7 @@ class ChangeProfilePicForm(forms.Form):
     profile_pic = forms.FileField(
         label='New Profile Picture',
         validators=[FileExtensionValidator(
-                ['jpg', 'png'],
+                ['jpg', 'png', 'jpeg'],
                 'Only .jpg and .png files are accepted'
             )
         ]

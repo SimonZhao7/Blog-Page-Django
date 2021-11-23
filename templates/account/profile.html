@@ -1,32 +1,44 @@
 {% extends "loggedin.html" %}
 {% block head %}
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
 {% endblock %}
 {% block page-content %}
-    <div class="c-page container-fluid col-6 mx-auto mt-2 p-3">
-        <img src="{{ viewed_user.profile_picture }}" class="mx-3 profile-img">
-        <div class="profile-info col-8">
-            <h1 class="px-2">{{ viewed_user.username }}</h1>
-            <div class="followers col-6 float-left">
-                <p>{{ followers }}</p>
-                <p>Followers</p>
+<div class="c-page">
+    <div class="profile-info">
+        <div class="img-container">
+            <img src="{{ viewed_user.profile_picture }}" class="profile-img">
+        </div>
+        <div class="p-stats">
+            <div class="username">
+                <h1>{{ viewed_user.username }}</h1>
+            </div>
+            <div class="follower-row">
+                <div class="followers">
+                    <p>{{ followers }}</p>
+                    <p>Followers</p>
+                </div>
+                <div class="friends">
+                    <p>{{ friends }}</p>
+                    <p>Friends</p>
+                </div>
+            </div>
+            <div class="button-row">
                 {% if viewed_user != user %}
-                    <form class="follow-button" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-info follow-btn" name="submit">{{ follow_value }}</button>
-                    </form>
+                <form class="follow-button" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-info follow-btn" name="submit">{{ follow_value }}</button>
+                </form>
+                {% else %}
+                    <a class="p-settings-button" href="{% url 'account:change_username' %}"><button class="btn btn-info p-setting-btn">
+                        Settings
+                    </button></a>
                 {% endif %}
             </div>
-            <div class="friends col-6 float-right">
-                <p>{{ friends }}</p>
-                <p>Friends</p>
-            </div>
-        </div>
-        <div class="settings col-3 text-center">
-            {% if viewed_user == user %}
-                <a href="{% url 'account:change_username' %}"><button class="btn btn-info mt-2">Profile Settings</button></a>
-            {% endif %}
         </div>
     </div>
+    <div class="post-content">
+   
+    </div>
+</div>
 {% endblock %}
