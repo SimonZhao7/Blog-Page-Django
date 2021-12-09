@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'account.apps.AccountConfig',
     'chat',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'blogsite.wsgi.application'
+ASGI_APPLICATION = 'blogsite.routing.application'
 
 
 # Database
@@ -139,3 +141,12 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

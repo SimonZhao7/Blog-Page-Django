@@ -12,18 +12,61 @@
 {% endfor %}
 {% endblock %}
 {% block msg %}
-<form method="post" class="msg-form">
-    {% csrf_token %}
-    {% for field in form.visible_fields %}
-        {{ field }}
-    {% endfor %}
-    <button class="btn btn-info" id="send-msg">Send Message</button>
-</form>
+<textarea rows=1, class="form-field" id="msg-content" style="resize: none; flex: 13;"></textarea>
+<button class="btn btn-info" id="send-msg">Send Message</button>
 {% endblock %}
 {% block scripts %}
 <script>
     $(document).ready(function() {
-        $('.chat-content').scrollTop($('.chat-content').prop('scrollHeight'))
+        $('.chat-content').scrollTop($('.chat-content').prop('scrollHeight'));
+    });
+
+    const url = 'ws://' + window.location.host + '/ws/chat/';
+    const ws = new WebSocket(url);
+
+    // before adding check to see if the slugs are the same
+
+    ws.onopen = function(event) {
+        console.log("Connection is opened");
+    }
+
+    ws.onmessage = function(event) {
+        var parsedDict = JSON.parse(event['data']);
+        var sender = parsedDict['sender'];
+        var align = ("{{ request.user.username }}" == sender) ? "right" : "left";
+
+        // only update chat content if chat matches
+        if (parsedDict['url'] == window.location.href) {
+            $('.chat-content').append('<p style="text-align: ' + align + ';">Sender: ' + sender + '</p>');
+            $('.chat-content').append('<p style="text-align: ' + align + ';">Message: ' + parsedDict['message'] + '</p>');
+            $('.chat-content').scrollTop($('.chat-content').prop('scrollHeight')); 
+        }
+        console.log("Message is received");
+    }
+    
+    ws.onclose = function(event) {
+        console.log("Connection is closed");
+    }
+
+    ws.onerror = function(event) {
+        console.log("Something went wrong");
+    }
+
+    $('#send-msg').click(function() {
+        var msgData = $('#msg-content').val();
+
+        if (msgData) {
+            ws.send(JSON.stringify({
+                'sender': "{{ request.user.username }}",
+                'message': msgData,
+                'url': window.location.href
+            }));
+        }
+        $('#msg-content').val('');
+    });
+
+    $(window).bind('beforeunload', function(){
+        ws.disconnect();
     });
 </script>
 {% endblock %}

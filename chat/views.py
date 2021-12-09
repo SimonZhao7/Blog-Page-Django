@@ -34,14 +34,4 @@ def chat(request, slug):
         desired_chat = Chat.objects.get(pk=Chat.get_id(slug), users=request.user.pk)
     except Chat.DoesNotExist:  # No id or not a user of chat
         return redirect('chat:inbox')
-
-    form = MessageForm()
-    if request.method == 'POST':
-        form = MessageForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.chat = desired_chat
-            instance.sender = request.user
-            instance.save()
-
-    return render(request, 'chat/chat.html', {'form': form, 'chats': chats, 'chat': desired_chat})
+    return render(request, 'chat/chat.html', {'chats': chats, 'chat': desired_chat})
