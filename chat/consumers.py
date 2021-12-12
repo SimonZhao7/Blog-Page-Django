@@ -3,6 +3,8 @@ from channels.exceptions import StopConsumer
 from asgiref.sync import async_to_sync
 from account.models import CustomUser
 from .models import Messages, Chat
+from notifications.models import Notification
+from django.utils import timezone
 import re, json
 
 
@@ -28,6 +30,17 @@ class ChatConsumer(SyncConsumer):
         
         new_message = Messages(chat=current_chat, message=msg_content, sender=sender)
         new_message.save()
+        
+        for user in current_chat.users.all():
+            if user != sender:
+                new_notification = Notification(
+                    user=user, 
+                    type='New Message', 
+                    detail=sender.username + ' has sent a new message to this chat: ' + current_chat.name + '.',
+                    link=sent_data['url'],
+                    date_created=timezone.now()
+                )
+                new_notification.save()
         
         async_to_sync(self.channel_layer.group_send)(
             self.room_name,

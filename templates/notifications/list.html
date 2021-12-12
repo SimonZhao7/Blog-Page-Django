@@ -1,0 +1,51 @@
+{% extends "loggedin.html" %}
+{% load static %}
+{% load bootstrap_icons %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/notifications.css' %}">
+{% endblock %}
+{% block page-content %}
+<div class="c-page">
+    <div class="notification-content">
+        {% if notifications.count == 0%} 
+            <p class="text-center" style="font-size: 28px;">Notification List Empty...</p>
+        {% endif %}
+        {% for notification in notifications %}
+            <div class="noti" id="{{ notification.pk|add:'618464911' }}">
+                <h1 class="noti-title">{{ notification.type }}</h1>
+                <button class="x-btn">{% bs_icon 'x' extra_classes="x-icon" %}</button>
+                <p>{{ notification.detail }}</p>
+                <a href="{{ notification.link }}"><button class="btn btn-info noti-btn">View Message</button></a><br/>
+                <p>{{ notification.date_created }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $('.x-btn').click(function(event) {
+        // send an ajax post to delete notification
+        var notification = $(event.target).parent().parent();
+        var csrf_token = '{{ csrf_token }}';
+        
+        $.ajax({
+            headers: {"X-CSRFToken": csrf_token},
+            url: "{% url 'notifications:delete' %}", 
+            type: 'post',
+            data: {
+                'slug': notification.attr('id'),
+            },
+            success: function() {
+                notification.remove();
+
+                var notifyContent = $('.notification-content');
+                console.log(notifyContent.length);
+                if (notifyContent.children().length == 0) {
+                    notifyContent.append('<p class="text-center" style="font-size: 28px;">Notification List Empty...</p>');
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+.notification-content {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.noti {
+    border-radius: 15px;
+    border: black solid 1px;
+    padding: 20px;
+}
+
+.noti p {
+    margin: 10px 0 10px 0;
+}
+
+.noti-title {
+    display: inline;
+    font-size: 24px;
+}
+
+.x-btn, .x-icon {
+    float: right;
+}
+
+.x-btn {
+    background-color: white;
+    padding: 0;
+    border: 0;
+}
+
+.noti-btn {
+    background-color: rgb(118, 178, 184);
+    border-color: rgb(118, 178, 184);
+}
+
+.noti-btn:hover {
+    background-color: rgb(86, 131, 135);
+    border-color: rgb(86, 131, 135);
+}

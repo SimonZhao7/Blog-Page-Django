@@ -52,7 +52,12 @@
         console.log("Something went wrong");
     }
 
-    $('#send-msg').click(function() {
+    $(window).bind('beforeunload', function(){
+        ws.disconnect();
+    });
+
+    // Msg Sending
+    function sendMessage() {
         var msgData = $('#msg-content').val();
 
         if (msgData) {
@@ -63,10 +68,30 @@
             }));
         }
         $('#msg-content').val('');
+    }
+
+    $('#send-msg').click( function() {
+        sendMessage();
     });
 
-    $(window).bind('beforeunload', function(){
-        ws.disconnect();
+    var shiftPressedBefore = false;
+
+    $('#msg-content').keydown(function(event) {
+        console.log($('#msg-content').val());
+        if (event.keyCode == 13 && !shiftPressedBefore) {
+            event.preventDefault();
+            sendMessage();
+        } 
+
+        if (event.keyCode == 16) {
+            shiftPressedBefore = true;
+        }
+    });
+
+    $('#msg-content').keyup(function(event) {
+        if (event.keyCode == 16) {
+            shiftPressedBefore = false;
+        }
     });
 </script>
 {% endblock %}

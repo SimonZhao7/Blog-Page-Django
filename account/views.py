@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from .models import CustomUser, UserFollowing, UserFriend
 from .forms import RegisterForm, ChangeUsernameForm, ChangePasswordForm, ChangeEmailForm, ChangeProfilePicForm
+from notifications.views import get_count
 import os
 # Create your views here.
 
@@ -42,7 +43,7 @@ def profile(request, username):
     return render(
         request,
         'account/profile.html',
-        {"viewed_user": user, 'follow_value': follow_value, 'followers': followers.count(), 'friends': friends.count()}
+        {"viewed_user": user, 'follow_value': follow_value, 'followers': followers.count(), 'friends': friends.count(), 'notif_count': get_count(request)}
     )
 
 
@@ -64,7 +65,7 @@ def logout(request):
     if request.method == 'POST':
         user_logout(request)
         return redirect('/')
-    return render(request, 'account/logout.html')
+    return render(request, 'account/logout.html', {'notif_count': get_count(request)})
 
 
 def register(request):
@@ -76,7 +77,7 @@ def register(request):
             account.profile_picture = '/media/profile_pictures/no-profile.png'
             account.save()
             return redirect('/')
-    return render(request, "account/register.html", {'form': form})
+    return render(request, "account/register.html", {'form': form, 'notif_count': get_count(request)})
 
 
 @login_required
@@ -88,7 +89,7 @@ def change_username(request):
             request.user.username = form.cleaned_data['username']
             request.user.save()
             messages.success(request, 'You have successfully changed your username')
-    return render(request, "account/change_user.html", {'form': form})
+    return render(request, "account/change_user.html", {'form': form, 'notif_count': get_count(request)})
 
 
 @login_required
@@ -103,7 +104,7 @@ def change_password(request):
             # prevent logout
             user_login(request, request.user)
             messages.success(request, 'You have successfully changed your password')
-    return render(request, 'account/change_password.html', {'form': form})
+    return render(request, 'account/change_password.html', {'form': form, 'notif_count': get_count(request)})
 
 
 @login_required
@@ -115,7 +116,7 @@ def change_email(request):
             request.user.email = form.cleaned_data['email']
             request.user.save()
             messages.success(request, 'You have successfully changed your email')
-    return render(request, 'account/change_email.html', {'form': form})
+    return render(request, 'account/change_email.html', {'form': form, 'notif_count': get_count(request)})
 
 
 @login_required
@@ -133,4 +134,4 @@ def change_profile_pic(request):
             request.user.save()
 
             messages.success(request, 'You have successfully changed your profile picture')
-    return render(request, 'account/change_profile_pic.html', {'form': form})
+    return render(request, 'account/change_profile_pic.html', {'form': form, 'notif_count': get_count(request)})

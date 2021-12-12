@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from account.models import CustomUser
-from .forms import CreateChatForm, MessageForm
+from .forms import CreateChatForm
 from .models import Chat
+from notifications.views import get_count
 # Create your views here.
 
 
@@ -10,7 +11,7 @@ from .models import Chat
 def inbox(request):
     # Find existing users (ManyToMany keeps track of pks)
     chats = Chat.objects.filter(users=request.user.pk)
-    return render(request, 'chat/inbox.html', {'chats': chats})
+    return render(request, 'chat/inbox.html', {'chats': chats, 'notif_count': get_count(request)})
 
 
 @login_required
@@ -24,7 +25,7 @@ def create(request):
         if form.is_valid():
             form.save()
             return redirect('/chat')
-    return render(request, 'chat/create.html', {'form': form})
+    return render(request, 'chat/create.html', {'form': form, 'notif_count': get_count(request)})
 
 
 @login_required
@@ -34,4 +35,4 @@ def chat(request, slug):
         desired_chat = Chat.objects.get(pk=Chat.get_id(slug), users=request.user.pk)
     except Chat.DoesNotExist:  # No id or not a user of chat
         return redirect('chat:inbox')
-    return render(request, 'chat/chat.html', {'chats': chats, 'chat': desired_chat})
+    return render(request, 'chat/chat.html', {'chats': chats, 'chat': desired_chat, 'notif_count': get_count(request)})

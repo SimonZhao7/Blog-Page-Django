@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'crispy_forms',
     'account.apps.AccountConfig',
     'chat',
+    'notifications',
     'channels',
+    'django_bootstrap_icons',
 ]
 
 MIDDLEWARE = [

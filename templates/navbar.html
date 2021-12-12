@@ -1,5 +1,6 @@
 <!-- Navbar -->
 {% load static %}
+{% load bootstrap_icons %}
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,7 +20,13 @@
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-success" type="submit">Search</button>
         </form>
-        <a class="nav-link" href="{% url 'account:profile' user.username %}" style="padding: 0 0 0 10px">
+        <a class="nav-link" href="{% url 'notifications:list' %}">
+            {% bs_icon 'bell-fill' size='20px' %}
+            {% if notif_count > 0%}
+                <div class="alert notif-count" style="background-color: rgb(224, 18, 18);">{{ notif_count }}</div>
+            {% endif %}
+        </a>
+        <a class="nav-link" href="{% url 'account:profile' user.username %}" style="padding: 0;">
             <img src="{{ user.profile_picture }}" alt="ppic" id="nav-img" style="border-radius: 50%;">
         </a>
     </div>
