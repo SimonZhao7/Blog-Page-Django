@@ -5,10 +5,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-    profile_picture = models.FileField()
-
-    # Add:
-    # friends = models.TextField(default=json.dumps([]))
+    profile_picture = models.ImageField()
 
 
 class UserFollowing(models.Model):
