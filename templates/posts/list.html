@@ -1,0 +1,91 @@
+{% extends 'loggedin.html' %}
+{% load static %}
+{% load bootstrap_icons %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/posts.css' %}">
+{% endblock %}
+{% block page-content %}
+<div class="c-page">
+    <div class="post-content">
+        {% for post in posts %}
+            <div class="post" id="{{ post.id|add:816020927 }}">
+                <div class="post-top-row">
+                    <a href="{% url 'account:profile' post.user.username %}">
+                        <img class="poster-ppic" src="{{ post.user.profile_picture }}" alt="profile picture">
+                    </a>
+                    <p>{{ post.user.username }}</p>
+                </div>
+                <img class="post-content" src="media/{{ post.image }}" rel="post image">
+
+                {% if request.user in post.users_liked.all %}
+                    <button class="liked">{% bs_icon 'heart-fill' color="#ed4956" extra_classes="heart" %}</button>
+                {% else %}
+                    <button class="unliked">{% bs_icon 'heart' extra_classes="heart" %}</button>
+                {% endif %}
+
+                {% if post.likes == 1 %}
+                    <p class="likes-text">like</p>
+                {% else %}
+                    <p class="likes-text">likes</p>
+                {% endif %}
+
+                <p class="likes">{{ post.likes }}</p>
+                
+                <p class="caption">{{ post.caption }}</p>
+                <p class="time-posted" style="font-size: 11px;">Posted: {{ post.date_time_posted }}</p>
+            </div>
+            <br>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $(document).on('click', function(event) {
+        var clickedClass = $(event.target).attr('class');
+
+        if (clickedClass == 'unliked') {
+            sendAjax(
+                event,
+                "{% url 'posts:like' %}", 
+                `<button class="liked">{% bs_icon 'heart-fill' color="#ed4956" extra_classes='heart' %}</button>`, 
+                1
+            );
+        } else if (clickedClass == 'liked') {
+            sendAjax(
+                event,
+                "{% url 'posts:unlike' %}", 
+                `<button class="unliked">{% bs_icon 'heart' extra_classes='heart' %}</button>`,  
+                -1
+            );
+        }
+    });
+
+    function sendAjax(event, url, replacingIcon, likeChange) {
+        var post = $(event.target).parent();
+        var icon = $(event.target);
+        $.ajax({
+            headers: {"X-CSRFToken": '{{ csrf_token }}'},
+            type: 'post',
+            url: url,
+            data: {
+                'slug': post.attr('id'),
+                'liker': '{{ request.user.username }}',
+            }, 
+            success: function(result) {   
+                icon.replaceWith(replacingIcon);
+                // Increment like value
+                var likes = parseInt(post.children('.likes').text()) + likeChange;
+
+                post.children('.likes').text(likes);
+                
+                if (likes == 1) {
+                    post.children('.likes-text').text('like');
+                } else {
+                    post.children('.likes-text').text('likes');
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

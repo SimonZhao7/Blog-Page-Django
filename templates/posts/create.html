@@ -1,0 +1,20 @@
+{% extends 'loggedin.html' %}
+{% load crispy_forms_tags %}
+{% block page-content %}
+<form method="post" enctype="multipart/form-data">
+    <legend>Create Post</legend>
+    {% if messages %}
+    <div class="alert alert-success">
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="form-actions">
+        <button class="btn btn-info">Create Post</button>
+    </div>
+</form>
+{% endblock %}

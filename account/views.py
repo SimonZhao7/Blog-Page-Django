@@ -49,14 +49,14 @@ def profile(request, username):
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect('/' + request.user.username)
+        return redirect('/account/' + request.user.username)
     form = AuthenticationForm()
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = CustomUser.objects.get(username=form.cleaned_data["username"])
             user_login(request, user)
-            return redirect('/' + user.username)
+            return redirect('/account/' + user.username)
     return render(request, "account/login.html", {"form": form})
 
 

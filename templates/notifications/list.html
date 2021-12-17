@@ -7,18 +7,19 @@
 {% block page-content %}
 <div class="c-page">
     <div class="notification-content">
-        {% if notifications.count == 0%} 
+        {% if notifications.exists %} 
+            {% for notification in notifications %}
+                <div class="noti" id="{{ notification.pk|add:'618464911' }}">
+                    <h1 class="noti-title">{{ notification.type }}</h1>
+                    <button class="x-btn">{% bs_icon 'x' extra_classes="x-icon" %}</button>
+                    <p>{{ notification.detail }}</p>
+                    <a href="{{ notification.link }}"><button class="btn btn-info noti-btn">View Message</button></a><br/>
+                    <p>{{ notification.date_created }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
             <p class="text-center" style="font-size: 28px;">Notification List Empty...</p>
         {% endif %}
-        {% for notification in notifications %}
-            <div class="noti" id="{{ notification.pk|add:'618464911' }}">
-                <h1 class="noti-title">{{ notification.type }}</h1>
-                <button class="x-btn">{% bs_icon 'x' extra_classes="x-icon" %}</button>
-                <p>{{ notification.detail }}</p>
-                <a href="{{ notification.link }}"><button class="btn btn-info noti-btn">View Message</button></a><br/>
-                <p>{{ notification.date_created }}</p>
-            </div>
-        {% endfor %}
     </div>
 </div>
 {% endblock %}

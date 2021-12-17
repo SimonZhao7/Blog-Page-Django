@@ -22,7 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('chat/', include('chat.urls', namespace='chat')),
     path('notifications/', include('notifications.urls', namespace='notifications')),
-    path('', include('account.urls', namespace='account')),
+    path('account/', include('account.urls', namespace='account')),
+    path('', include('posts.urls', namespace='posts')),
 ]
 
 if settings.DEBUG:

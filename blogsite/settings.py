@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'chat',
     'notifications',
+    'posts',
     'channels',
     'django_bootstrap_icons',
 ]
@@ -130,6 +131,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -141,8 +143,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/account/'
+LOGIN_REDIRECT_URL = '/account/'
 
 CHANNEL_LAYERS = {
     "default": {
@@ -152,3 +154,5 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+BS_ICONS_CACHE = os.path.join(STATIC_ROOT, 'icon_cache')
