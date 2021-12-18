@@ -156,3 +156,4 @@ CHANNEL_LAYERS = {
 }
 
 BS_ICONS_CACHE = os.path.join(STATIC_ROOT, 'icon_cache')
+BS_ICONS_CUSTOM_PATH = os.path.join(STATICFILES_DIRS[0], 'img')

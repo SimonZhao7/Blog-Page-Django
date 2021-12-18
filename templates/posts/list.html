@@ -7,35 +7,10 @@
 {% block page-content %}
 <div class="c-page">
     <div class="post-content">
-        {% for post in posts %}
-            <div class="post" id="{{ post.id|add:816020927 }}">
-                <div class="post-top-row">
-                    <a href="{% url 'account:profile' post.user.username %}">
-                        <img class="poster-ppic" src="{{ post.user.profile_picture }}" alt="profile picture">
-                    </a>
-                    <p>{{ post.user.username }}</p>
-                </div>
-                <img class="post-content" src="media/{{ post.image }}" rel="post image">
-
-                {% if request.user in post.users_liked.all %}
-                    <button class="liked">{% bs_icon 'heart-fill' color="#ed4956" extra_classes="heart" %}</button>
-                {% else %}
-                    <button class="unliked">{% bs_icon 'heart' extra_classes="heart" %}</button>
-                {% endif %}
-
-                {% if post.likes == 1 %}
-                    <p class="likes-text">like</p>
-                {% else %}
-                    <p class="likes-text">likes</p>
-                {% endif %}
-
-                <p class="likes">{{ post.likes }}</p>
-                
-                <p class="caption">{{ post.caption }}</p>
-                <p class="time-posted" style="font-size: 11px;">Posted: {{ post.date_time_posted }}</p>
-            </div>
-            <br>
-        {% endfor %}
+        {% include 'posts/post_content.html' %}
+        <div class="loading-icon">
+            <img id="loading-gif" src="{% static 'img/loading-wheel.gif' %}" alt="loading-icon">
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -87,5 +62,39 @@
             }
         });
     }
+    
+    // setup to prevent duplication
+    var contentDiv = $('.post-content');
+    var page = contentDiv.data('page');
+    var scrolledOnce = false;
+    
+    // if i swipe more than once, the duplication happens
+    contentDiv.on('scroll', function(event) {
+        page = contentDiv.data('page');
+        if ((contentDiv.scrollTop() + contentDiv.height() >= contentDiv.prop('scrollHeight') - 20) && !scrolledOnce) {
+            scrolledOnce = true;
+            setTimeout(function() {
+                $.ajax({
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    type: 'post',
+                    url: "{% url 'posts:lazy_list' %}",
+                    data: {
+                        'page': page,
+                    },
+                    success: function(event) { // JSON Response
+                        $('.loading-icon').before(event.posts_html);
+                        scrolledOnce = false;
+
+                        if (event.has_next) {
+                            contentDiv.data('page', event.page + 1);
+                        } else {
+                            $('.loading-icon').hide();
+                            contentDiv.off('scroll');
+                        }
+                    }
+                });
+            }, 1250);
+        }
+    });
 </script>
 {% endblock %}

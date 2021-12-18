@@ -1,0 +1,30 @@
+{% load bootstrap_icons %}
+{% for post in posts %}
+    <div class="post" id="{{ post.id|add:816020927 }}">
+        <div class="post-top-row">
+            <a href="{% url 'account:profile' post.user.username %}">
+                <img class="poster-ppic" src="{{ post.user.profile_picture }}" alt="profile picture">
+            </a>
+            <p>{{ post.user.username }}</p>
+        </div>
+        <img class="post-img" src="media/{{ post.image }}" rel="post image">
+
+        {% if request.user in post.users_liked.all %}
+            <button class="liked">{% bs_icon 'heart-fill' color="#ed4956" extra_classes="heart" %}</button>
+        {% else %}
+            <button class="unliked">{% bs_icon 'heart' extra_classes="heart" %}</button>
+        {% endif %}
+
+        {% if post.likes == 1 %}
+            <p class="likes-text">like</p>
+        {% else %}
+            <p class="likes-text">likes</p>
+        {% endif %}
+
+        <p class="likes">{{ post.likes }}</p>
+        
+        <p class="caption">{{ post.caption }}</p>
+        <p class="time-posted" style="font-size: 11px;">Posted: {{ post.date_time_posted }}</p>
+    </div>
+    <br>
+{% endfor %}

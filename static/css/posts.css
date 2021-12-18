@@ -24,6 +24,17 @@
 
 .post-content {
     overflow-y: scroll;
+    height: 100%;
+}
+
+.loading-icon {
+    display: flex;
+    justify-content: center;
+}
+
+#loading-gif {
+    width: 30px;
+    height: 30px;
 }
 
 .post-top-row {
@@ -50,7 +61,7 @@
     border: rgb(118, 178, 184) 2px solid;
 }
 
-.post-content {
+.post-img {
     aspect-ratio: 1 / 1;
     width: 100%;
     object-fit: cover;
