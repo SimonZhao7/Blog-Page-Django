@@ -43,7 +43,7 @@
 
 .follow-btn:hover, .p-setting-btn:hover {
     background-color: rgb(86, 131, 135);
-    border-color: rgb(86, 131, 135)
+    border-color: rgb(86, 131, 135);
 }
 
 .followers p, .friends p {

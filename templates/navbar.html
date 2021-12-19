@@ -15,9 +15,8 @@
                 <a class="nav-link" href="{% url 'account:profile' user.username %}#" tabindex="-1" style="float: right;">Profile</a>
             </div>
         </div>
-        <form class="d-flex justify-content-center" style="margin: 0;">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-success" type="submit">Search</button>
+        <form id="search-form" class="d-flex justify-content-center flex-grow-1" style="margin: 0;">
+            <input id="search-input" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" autocomplete="off" list="search-results">
         </form>
         <a class="nav-link" href="{% url 'notifications:list' %}">
             {% bs_icon 'bell-fill' size='20px' %}
@@ -30,3 +29,4 @@
         </a>
     </div>
 </nav>
+<div class="shadow bg-body rounded" id="search-results"></div>

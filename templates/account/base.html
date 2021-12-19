@@ -46,6 +46,51 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js" 
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" 
         crossorigin="anonymous"></script>
+    <script>
+        var searchResults = $('#search-results');
+        var searchInput = $('#search-input');
+
+        // Make search results div the same position as input
+        $(window).on('load', function(event) {
+            searchResults.width(searchInput.css('width'));
+            searchResults.css('left', searchInput.position().left);
+            searchResults.css('padding', searchInput.css('padding'));
+        });
+
+        // Opacity transition for search results div
+        $(window).on('click', function(event) {
+            if ($(event.target).is(searchInput)) {
+                searchResults.fadeIn(80);
+            } else {
+                searchResults.fadeOut(80);
+            }
+        });
+        
+        searchInput.on('keypress', function(event) {
+            $.ajax({
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                type: 'post',
+                url: "{% url 'search:get_results' %}",
+                data: {
+                    'search_val': $(event.target).val()
+                },
+                success: function(event) {
+                    var results = event.results;
+                    searchResults.empty();
+                    for (var i = 0; i < results.length; i++) {
+                        searchResults.append(
+                            `<a href="/account/` + results[i]['username'] + `">
+                                <button class="btn btn-info result-link">
+                                    <img class="result-img" src="` + results[i]['profile_picture'] + `" alt="profile pic">`
+                                    + results[i]['username'] + `
+                                </button>
+                            </a>`
+                        );
+                    }
+                }
+            })
+        });
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 
