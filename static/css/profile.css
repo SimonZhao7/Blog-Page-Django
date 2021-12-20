@@ -21,6 +21,8 @@
     border: rgb(118, 178, 184) solid 5px;
     margin: 10px;
     box-sizing: content-box;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 }
 
 .follower-row {

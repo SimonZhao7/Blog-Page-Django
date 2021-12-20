@@ -1,20 +1,45 @@
 {% extends 'loggedin.html' %}
 {% load crispy_forms_tags %}
 {% block page-content %}
-<form method="post" enctype="multipart/form-data">
-    <legend>Create Post</legend>
-    {% if messages %}
-    <div class="alert alert-success">
-        {% for message in messages %}
-        {{ message }}
-        {% endfor %}
-    </div>
-    {% endif %}
+<div class="c-page">
+    <form method="post" enctype="multipart/form-data">
+        <div class="text-center">
+            <legend>Create Post</legend>
+        </div>
 
-    {% csrf_token %}
-    {{ form|crispy }}
-    <div class="form-actions">
-        <button class="btn btn-info">Create Post</button>
-    </div>
-</form>
+        {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% csrf_token %}
+        <br>
+        {{ form.aspect_ratio.errors }}
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="{{ form.aspect_ratio.id_for_label }}">Select Aspect Ratio</label>
+            </div>
+            {{ form.aspect_ratio }}
+        </div>
+        <br>
+        {{ form.image.errors }}
+        <div class="input-group">
+            <div class="custom-file">
+                {{ form.image }}
+                <label class="custom-file-label" for="{{ form.image.id_for_label }}">Choose file</label>
+            </div>
+        </div>
+        <br>
+        {{ form.caption.errors }}
+        {{ form.caption.label }}
+        {{ form.caption }}
+        <br>
+        <div class="form-actions text-center">
+            <button class="btn btn-info w-25">Create Post</button>
+        </div>
+    </form>
+</div>
 {% endblock %}

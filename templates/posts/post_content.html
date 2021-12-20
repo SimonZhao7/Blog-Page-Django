@@ -7,7 +7,7 @@
             </a>
             <p>{{ post.user.username }}</p>
         </div>
-        <img class="post-img" src="media/{{ post.image }}" rel="post image">
+        <img class="post-img {{ post.get_ratio_class }}" src="media/{{ post.image }}" rel="post image">
 
         {% if request.user in post.users_liked.all %}
             <button class="liked">{% bs_icon 'heart-fill' color="#ed4956" extra_classes="heart" %}</button>
