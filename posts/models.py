@@ -6,7 +6,7 @@ from account.models import CustomUser
 
 class Post(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    aspect_ratio = models.CharField(max_length=20, null=True)
+    aspect_ratio = models.CharField(max_length=20)
     image = models.ImageField()
     caption = models.TextField(blank=True)
     users_liked = models.ManyToManyField(CustomUser, related_name='users_liked')

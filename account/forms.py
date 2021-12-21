@@ -31,7 +31,7 @@ class ChangeUsernameForm(forms.Form):
         if not authenticate(username=self.user.username, password=password):
             raise ValidationError('Incorrect Password')
 
-        if existing_users.count() != 0:
+        if existing_users.exists():
             raise ValidationError('This username already exists')
 
 

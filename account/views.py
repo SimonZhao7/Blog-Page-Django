@@ -14,49 +14,51 @@ import os
 
 @login_required
 def profile(request, username):
-    user = get_object_or_404(CustomUser, username=username)
-    followers = UserFollowing.objects.filter(following=user)
-    friends = UserFriend.objects.filter(user=user)
+    user = request.user
+    viewed_user = get_object_or_404(CustomUser, username=username)
+    followers = UserFollowing.objects.filter(following=viewed_user)
+    friends = UserFriend.objects.filter(user=viewed_user)
 
     # checks to see if you are currently following the viewed user
     follow_value = 'Follow'
-    if followers.filter(user=request.user).count() > 0:
+    if followers.filter(user=user).exists():
         follow_value = 'Following'
 
     if request.method == 'POST':
         # try to create a new object with kwargs
-        new_following = request.user.userfollowing_set.get_or_create(user=request.user, following=user)
+        new_following, created = user.userfollowing_set.get_or_create(user=user, following=viewed_user)
 
         # if no new object is created delete it
-        if not new_following[1]:
-            new_following[0].delete()
+        if not created:
+            new_following.delete()
             # if the users were friends, they will no longer be friends
-            if friends.filter(friend=request.user).count() > 0:
-                request.user.userfriend_set.get(user=request.user, friend=user).delete()
-                user.userfriend_set.get(user=user, friend=request.user).delete()
+            if friends.filter(friend=user).exists():
+                user.userfriend_set.get(user=user, friend=viewed_user).delete()
+                viewed_user.userfriend_set.get(user=viewed_user, friend=user).delete()
         else:
             # if viewed user is following you back, you two become friends
-            if user.userfollowing_set.all().filter(following=request.user).count() > 0:
-                request.user.userfriend_set.create(user=request.user, friend=user)
-                user.userfriend_set.create(user=user, friend=request.user)
-        return redirect('/' + user.username)
+            if viewed_user.userfollowing_set.all().filter(following=user).exists():
+                user.userfriend_set.create(user=user, friend=viewed_user)
+                viewed_user.userfriend_set.create(user=viewed_user, friend=user)
+        return redirect('account:profile', username=viewed_user.username)
     return render(
         request,
         'account/profile.html',
-        {"viewed_user": user, 'follow_value': follow_value, 'followers': followers.count(), 'friends': friends.count(), 'notif_count': get_count(request)}
+        {"viewed_user": viewed_user, 'follow_value': follow_value, 'followers': followers.count(), 'friends': friends.count(), 'notif_count': get_count(request)}
     )
 
 
 def login(request):
-    if request.user.is_authenticated:
-        return redirect('/account/' + request.user.username)
+    user = request.user
+    if user.is_authenticated:
+        return redirect('account:profile', username=user.username)
     form = AuthenticationForm()
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = CustomUser.objects.get(username=form.cleaned_data["username"])
             user_login(request, user)
-            return redirect('/account/' + user.username)
+            return redirect('account:profile', username=user.username)
     return render(request, "account/login.html", {"form": form})
 
 
@@ -64,7 +66,7 @@ def login(request):
 def logout(request):
     if request.method == 'POST':
         user_logout(request)
-        return redirect('/')
+        return redirect('account:login')
     return render(request, 'account/logout.html', {'notif_count': get_count(request)})
 
 
@@ -76,51 +78,55 @@ def register(request):
             account = form.save(commit=False)
             account.profile_picture = '/media/profile_pictures/no-profile.png'
             account.save()
-            return redirect('/')
-    return render(request, "account/register.html", {'form': form, 'notif_count': get_count(request)})
+            return redirect('account:login')
+    return render(request, "account/register.html", {'form': form})
 
 
 @login_required
 def change_username(request):
-    form = ChangeUsernameForm(user=request.user)
+    user = request.user
+    form = ChangeUsernameForm(user=user)
     if request.method == 'POST':
-        form = ChangeUsernameForm(request.POST, user=request.user)
+        form = ChangeUsernameForm(request.POST, user=user)
         if form.is_valid():
-            request.user.username = form.cleaned_data['username']
-            request.user.save()
+            user.username = form.cleaned_data['username']
+            user.save()
             messages.success(request, 'You have successfully changed your username')
     return render(request, "account/change_user.html", {'form': form, 'notif_count': get_count(request)})
 
 
 @login_required
 def change_password(request):
-    form = ChangePasswordForm(user=request.user)
+    user = request.user
+    form = ChangePasswordForm(user=user)
     if request.method == 'POST':
-        form = ChangePasswordForm(request.POST, user=request.user)
+        form = ChangePasswordForm(request.POST, user=user)
         if form.is_valid():
-            request.user.set_password(form.cleaned_data['new_password'])
-            request.user.save()
+            user.set_password(form.cleaned_data['new_password'])
+            user.save()
 
             # prevent logout
-            user_login(request, request.user)
+            user_login(request, user)
             messages.success(request, 'You have successfully changed your password')
     return render(request, 'account/change_password.html', {'form': form, 'notif_count': get_count(request)})
 
 
 @login_required
 def change_email(request):
-    form = ChangeEmailForm(user=request.user)
+    user = request.user
+    form = ChangeEmailForm(user=user)
     if request.method == 'POST':
-        form = ChangeEmailForm(request.POST, user=request.user)
+        form = ChangeEmailForm(request.POST, user=user)
         if form.is_valid():
-            request.user.email = form.cleaned_data['email']
-            request.user.save()
+            user.email = form.cleaned_data['email']
+            user.save()
             messages.success(request, 'You have successfully changed your email')
     return render(request, 'account/change_email.html', {'form': form, 'notif_count': get_count(request)})
 
 
 @login_required
 def change_profile_pic(request):
+    user = request.user
     form = ChangeProfilePicForm()
     if request.method == 'POST':
         form = ChangeProfilePicForm(request.POST, request.FILES)
@@ -130,8 +136,7 @@ def change_profile_pic(request):
 
             # save file to media and update user
             saved_filepath = fs.save(os.path.join('profile_pictures', file.name), file)
-            request.user.profile_picture = settings.MEDIA_URL + saved_filepath
-            request.user.save()
-
+            user.profile_picture = settings.MEDIA_URL + saved_filepath
+            user.save()
             messages.success(request, 'You have successfully changed your profile picture')
     return render(request, 'account/change_profile_pic.html', {'form': form, 'notif_count': get_count(request)})
