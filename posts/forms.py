@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Post
+from .models import Comment, Post
 from django.utils import timezone
 from django import forms
 
@@ -34,5 +34,9 @@ class CreatePostForm(ModelForm):
         if commit:
             instance.save()
         return instance
-        
-        
+    
+    
+class ReplyForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['message']    

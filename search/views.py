@@ -8,6 +8,5 @@ from account.models import CustomUser
 def get_results(request):
     if request.method == 'POST':
         results = CustomUser.objects.filter(username__icontains=request.POST.get('search_val')).values('username', 'profile_picture')
-        print(list(results))
         return JsonResponse({'results': list(results)})
     return redirect('posts:list')

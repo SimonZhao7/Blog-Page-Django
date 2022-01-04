@@ -146,6 +146,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_URL = '/account/'
 LOGIN_REDIRECT_URL = '/account/'
 
+# Django Sessions
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Django Channels
+ 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",

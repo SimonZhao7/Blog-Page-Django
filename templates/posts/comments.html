@@ -1,0 +1,73 @@
+{% extends 'loggedin.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/posts.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/chat.css' %}">
+{% endblock %}
+{% block page-content %}
+<div class="c-page comments">
+    <div class="comments-content">
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="comment">
+                    {% include 'posts/comment.html' %}
+                </div>
+                <br>
+                {% for reply in comment.comment_set.all %}
+                    {% with comment=reply %}
+                        <div class="reply">
+                            {% include 'posts/comment.html' %}
+                        </div>
+                        <br>
+                    {% endwith %}
+                {% endfor %}
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No Comments...</p>
+        {% endif %}
+    </div>
+    <div class="comment-post">
+        <textarea rows=1, class="form-field" id="comment-content" style="resize: none; flex: 13;"></textarea>
+        <button class="btn btn-info" id="add-comment">Send Message</button>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $(document).ready(function(event) {
+            $('.comments-content').scrollTop($('.comments-content').prop('scrollHeight'));
+            console.log('scrolled');
+        });
+
+        $('#add-comment').on('click', function(event) {
+            $.ajax({
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                type: 'post',
+                url: "{% url 'posts:comments' post.get_slug %}",
+                data: {
+                    'comment': $('#comment-content').val()
+                },
+                success: function(event) {
+                    console.log(event);
+                    $('.comments-content').append(
+                        `<div class="comment">
+                            <div class="user-info-row">
+                                <div class="img-container">
+                                    <img class="commenter-img" src="{{ user.profile_picture }}" alt="commenter ppic">
+                                </div>
+                                <p class="commenter-username">{{ user.username }}<p>
+                            </div>
+                            <p class="comment-msg">` + $('#comment-content').val() + `</p>
+                            <div class="comment-actions">
+                                <a href="/comments/delete/` + event['comment_slug'].toString() + `">Delete</a>
+                                <a href="edit">Edit</a>
+                            </div>
+                        </div>`
+                    );
+                    $('.comments-content').scrollTop($('.comments-content').prop('scrollHeight'));
+                    $('#comment-content').val("");
+                }
+            })
+        })
+    </script>
+{% endblock %}

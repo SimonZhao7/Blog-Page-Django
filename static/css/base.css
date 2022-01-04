@@ -8,6 +8,10 @@ html, body, .content {
     height: 100%;
 }
 
+a, a:hover {
+    color: black;
+}
+
 .c-page {
     background-color: white;
     height: calc(100% - 56px);

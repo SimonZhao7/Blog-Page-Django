@@ -1,0 +1,15 @@
+<div class="user-info-row">
+    <div class="img-container">
+        <img class="commenter-img" src="{{ comment.user.profile_picture }}" alt="commenter ppic">
+    </div>
+    <p class="commenter-username">{{ comment.user }}<p>
+</div>
+<p class="comment-msg">{{ comment.message }}</p>
+<div class="comment-actions">
+    {% if comment.user == user %}
+        <a href="{% url 'posts:delete_comment' comment.get_slug %}">Delete</a>
+        <a href="edit">Edit</a>
+    {% elif not comment.is_reply %}
+        <a href="{% url 'posts:reply_comment' comment.get_slug %}">Reply</a>
+    {% endif %}
+</div>

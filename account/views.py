@@ -37,7 +37,7 @@ def profile(request, username):
                 viewed_user.userfriend_set.get(user=viewed_user, friend=user).delete()
         else:
             # if viewed user is following you back, you two become friends
-            if viewed_user.userfollowing_set.all().filter(following=user).exists():
+            if viewed_user.userfollowing_set.filter(following=user).exists():
                 user.userfriend_set.create(user=user, friend=viewed_user)
                 viewed_user.userfriend_set.create(user=viewed_user, friend=user)
         return redirect('account:profile', username=viewed_user.username)

@@ -22,3 +22,19 @@ class Post(models.Model):
     
     def get_ratio_class(self):
         return self.aspect_ratio
+    
+    
+class Comment(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    message = models.TextField()
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    likes = models.IntegerField(default=0)
+    replies = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    is_reply = models.BooleanField(default=False)
+    
+    def get_slug(self):
+        return self.pk + 871522049
+
+    @staticmethod
+    def get_id(slug):
+        return int(slug) - 871522049    
