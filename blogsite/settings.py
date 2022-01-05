@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'chat',
     'notifications',
     'posts',
+    'RestAPI',
     'channels',
+    'rest_framework',
     'django_bootstrap_icons',
 ]
 

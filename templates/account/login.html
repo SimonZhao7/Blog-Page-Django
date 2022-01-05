@@ -14,7 +14,7 @@
         {{ form|crispy }}
 
         <div class="form-actions text-center">
-            <p>Don't have an account? Create one <a href="/register">here</a></p>
+            <p>Don't have an account? Create one <a href="{% url 'account:register' %}">here</a></p>
             <button type="submit" id="login-button" class="btn btn-primary btn-lg">Log In</button>
         </div>
     </form>

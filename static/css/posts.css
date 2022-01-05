@@ -7,6 +7,10 @@
     flex-direction: row;
 }
 
+a, a:hover {
+    color: black;
+}
+
 .liked, .unliked {
     flex: 1;
     background-color: white;

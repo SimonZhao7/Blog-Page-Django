@@ -24,6 +24,7 @@ urlpatterns = [
     path('notifications/', include('notifications.urls', namespace='notifications')),
     path('account/', include('account.urls', namespace='account')),
     path('search/', include('search.urls', namespace='search')),
+    path('api/', include('RestAPI.urls')),
     path('', include('posts.urls', namespace='posts')),
 ]
 
