@@ -28,6 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+]
+
 
 # Application definition
 
@@ -46,7 +51,9 @@ INSTALLED_APPS = [
     'RestAPI',
     'channels',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_bootstrap_icons',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'blogsite.urls'

@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework.authtoken import views as auth_views
 from . import views
 
 app_name = 'RestAPI'
@@ -20,4 +21,5 @@ urlpatterns = [
     path('PostAPI/<int:id>/', views.PostAPIView.as_view(), name='PostAPI'),
     path('CommentAPI/', views.CommentAPIView.as_view(), name='CommentAPI'),
     path('CommentAPI/<int:id>/', views.CommentAPIView.as_view(), name='CommentAPI'),
+    path('login/', auth_views.obtain_auth_token, name='login'),
 ]

@@ -7,10 +7,13 @@ from .serializers import CustomUserSerializer, MessagesSerializer, NotificationS
     ChatSerializer, PostSerializer, CommentSerializer
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, RetrieveModelMixin
+from rest_framework.permissions import IsAuthenticated
+from .permissions import AllowPOSTOnly
 
 # Create your views here.
 class SharedView(GenericAPIView, ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, RetrieveModelMixin):
     lookup_field = 'id'
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, id=None):
         if id:
@@ -38,6 +41,7 @@ class SharedView(GenericAPIView, ListModelMixin, CreateModelMixin, UpdateModelMi
         
 
 class CustomUserAPIView(SharedView):
+    permission_classes = [AllowPOSTOnly]
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
     
