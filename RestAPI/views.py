@@ -3,7 +3,7 @@ from account.models import CustomUser, UserFollowing, UserFriend
 from chat.models import Chat, Messages
 from notifications.models import Notification
 from posts.models import Post, Comment
-from .serializers import CustomUserSerializer, MessagesSerializer, NotificationSerializer, UserFollowingSerializer, UserFriendSerializer, \
+from .serializers import CustomUserSerializer, RegisterSerializer, MessagesSerializer, NotificationSerializer, UserFollowingSerializer, UserFriendSerializer, \
     ChatSerializer, PostSerializer, CommentSerializer
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, RetrieveModelMixin
@@ -41,8 +41,38 @@ class SharedView(GenericAPIView, ListModelMixin, CreateModelMixin, UpdateModelMi
         
 
 class CustomUserAPIView(SharedView):
-    permission_classes = [AllowPOSTOnly]
     serializer_class = CustomUserSerializer
+    queryset = CustomUser.objects.all()
+    
+    def get(self, request, id=None, token=None, username=None):
+        if id:
+            try:
+                user = CustomUser.objects.get(id=id)
+            except: 
+                return Response("Can't find use with provided id")
+            return Response(self.serializer_class(user).data)
+        elif token:
+            try:
+                user = CustomUser.objects.get(auth_token__key=token)
+            except:
+                return Response("Can't find user with provided token")
+            return Response(self.serializer_class(user).data)
+        elif username:
+            try:
+                user = CustomUser.objects.get(username=username)
+            except:
+                return Response("Can't find user with provided username")
+            return Response(self.serializer_class(user).data)
+        else:
+            return self.list(request)
+        
+    def post(self, request, id=None):
+        return Response({"error": "This method is not allowed for CustomUser. Use RegisterAPIView"})
+    
+    
+class RegisterAPIView(SharedView):
+    permission_classes = [AllowPOSTOnly]
+    serializer_class = RegisterSerializer
     queryset = CustomUser.objects.all()
     
 class UserFollowingAPIView(SharedView):

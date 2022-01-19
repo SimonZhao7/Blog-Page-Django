@@ -7,6 +7,8 @@ app_name = 'RestAPI'
 urlpatterns = [
     path('CustomUserAPI/', views.CustomUserAPIView.as_view(), name='CustomUserAPI'),
     path('CustomUserAPI/<int:id>/', views.CustomUserAPIView.as_view(), name='CustomUserAPI'),
+    path('CustomUserAPI/token=<str:token>/', views.CustomUserAPIView.as_view(), name='CustomUserAPI'),
+    path('CustomUserAPI/username=<str:username>/', views.CustomUserAPIView.as_view(), name='CustomUserAPI'),
     path('UserFollowingAPI/', views.UserFollowingAPIView.as_view(), name='UserFollowingAPI'),
     path('UserFollowingAPI/<int:id>/', views.UserFollowingAPIView.as_view(), name='UserFollowingAPI'),
     path('UserFriendAPI/', views.UserFriendAPIView.as_view(), name='UserFriendAPI'),
@@ -22,4 +24,5 @@ urlpatterns = [
     path('CommentAPI/', views.CommentAPIView.as_view(), name='CommentAPI'),
     path('CommentAPI/<int:id>/', views.CommentAPIView.as_view(), name='CommentAPI'),
     path('login/', auth_views.obtain_auth_token, name='login'),
+    path('register/', views.RegisterAPIView.as_view(), name='register'),
 ]
