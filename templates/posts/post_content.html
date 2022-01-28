@@ -3,7 +3,7 @@
     <div class="post" id="{{ post.get_slug }}">
         <div class="post-top-row">
             <a href="{% url 'account:profile' post.user.username %}">
-                <img class="poster-ppic" src="{{ post.user.profile_picture }}" alt="profile picture">
+                <img class="poster-ppic" src="{{ post.user.profile_picture.url }}" alt="profile picture">
             </a>
             <p>{{ post.user.username }}</p>
         </div>

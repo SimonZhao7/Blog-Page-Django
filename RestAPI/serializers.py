@@ -5,7 +5,10 @@ from account.models import CustomUser, UserFollowing, UserFriend
 from chat.models import Chat, Messages
 from notifications.models import Notification
 from posts.models import Post, Comment
+from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import authenticate
+import os
 
 
 class RegisterSerializer(serializers.Serializer): 
@@ -48,13 +51,87 @@ class RegisterSerializer(serializers.Serializer):
         instance.save()
         return instance
     
-    def update(self, instance, validated_data):
-        instance.email = validated_data.get('email', instance.email)
-        instance.username = validated_data.get('username', instance.username)
-        instance.set_password(validated_data.get('password', instance.password))
-        instance.profile_picture = validated_data.get('profile_picture', instance.profile_picture)
+class BaseSettingSerializer(serializers.ModelSerializer):
+    def validate(self, data):
+        user = CustomUser.objects.get(id=self.context['id'])
+        if not authenticate(username=user.username, password=data['password']):
+            raise ValidationError('Incorrect Password')
+        return data
+    
+    def save_instance(self, instance):
+        instance.save()
         return instance
+    
+class ChangeUsernameSerializer(BaseSettingSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'password']
         
+    def validate(self, data):
+        username = data['username']
+        if len(username) < 6:
+            raise ValidationError('Username is under 6 characters long')
+        
+        if CustomUser.objects.filter(username=username).exists():
+            raise ValidationError('Username already exists')
+        return super().validate(data)
+    
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username')
+        return super().save_instance(instance)
+    
+class ChangeEmailSerializer(BaseSettingSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'password']
+        
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email')
+        return super().save_instance(instance)
+    
+class ChangePasswordSerializer(BaseSettingSerializer):
+    new_password = serializers.CharField(max_length=128, write_only=True)
+    confirm_password = serializers.CharField(max_length=128, write_only=True)
+    
+    class Meta:
+        model = CustomUser
+        fields = ['password', 'new_password', 'confirm_password']
+        
+    def validate(self, data):
+        pwd = data['new_password']
+        validate_password(pwd)
+        if pwd != data['confirm_password']:
+            raise ValidationError("Passwords don't match")
+        user_pwd = super().validate(data)['password']
+        if pwd == user_pwd:
+            raise ValidationError('Your new password can not be the same as your old one')
+        return data
+        
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data.get('new_password'))
+        return super().save_instance(instance)
+    
+class ChangeProfilePictureSerializer(BaseSettingSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['profile_picture', 'password']
+        
+    def update(self, instance, validated_data):
+        photo = validated_data.get('profile_picture')
+        fs = FileSystemStorage()
+        saved_filepath = fs.save(os.path.join('profile_pictures', photo.name), photo)
+        instance.profile_picture = saved_filepath
+        return super().save_instance(instance)
+                
+class UserFollowingSerializer(ModelSerializer):
+    class Meta:
+        model = UserFollowing
+        fields = '__all__'
+        
+class UserFriendSerializer(ModelSerializer):
+    class Meta:
+        model = UserFriend
+        fields = '__all__'
         
 class CustomUserSerializer(ModelSerializer):
     class Meta:
@@ -74,16 +151,6 @@ class CustomUserSerializer(ModelSerializer):
         instance = super().save(**kwargs)
         instance.set_password(self.validated_data['password'])
         instance.save()
-        
-class UserFollowingSerializer(ModelSerializer):
-    class Meta:
-        model = UserFollowing
-        fields = '__all__'
-        
-class UserFriendSerializer(ModelSerializer):
-    class Meta:
-        model = UserFriend
-        fields = '__all__'
         
 class ChatSerializer(ModelSerializer):
     class Meta:

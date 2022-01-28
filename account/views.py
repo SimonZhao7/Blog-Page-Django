@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as user_login, logout as user_logout
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.forms import AuthenticationForm
-from django.conf import settings
 from django.contrib import messages
 from .models import CustomUser, UserFollowing, UserFriend
 from .forms import RegisterForm, ChangeUsernameForm, ChangePasswordForm, ChangeEmailForm, ChangeProfilePicForm
@@ -136,7 +135,7 @@ def change_profile_pic(request):
 
             # save file to media and update user
             saved_filepath = fs.save(os.path.join('profile_pictures', file.name), file)
-            user.profile_picture = settings.MEDIA_URL + saved_filepath
+            user.profile_picture = saved_filepath
             user.save()
             messages.success(request, 'You have successfully changed your profile picture')
     return render(request, 'account/change_profile_pic.html', {'form': form, 'notif_count': get_count(request)})
