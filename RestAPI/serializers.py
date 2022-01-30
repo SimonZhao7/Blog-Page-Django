@@ -6,6 +6,7 @@ from chat.models import Chat, Messages
 from notifications.models import Notification
 from posts.models import Post, Comment
 from django.core.files.storage import FileSystemStorage
+from django.core.validators import validate_email
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate
 import os
@@ -81,9 +82,18 @@ class ChangeUsernameSerializer(BaseSettingSerializer):
         return super().save_instance(instance)
     
 class ChangeEmailSerializer(BaseSettingSerializer):
+    email = serializers.CharField()
     class Meta:
         model = CustomUser
         fields = ['email', 'password']
+        
+    def validate(self, data):
+        email = data['email']
+        validate_email(email)
+        
+        if CustomUser.objects.filter(email=email).exists():
+            raise ValidationError('Email already exists')
+        return super().validate(data)
         
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email')

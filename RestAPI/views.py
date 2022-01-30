@@ -69,7 +69,7 @@ class CustomUserAPIView(SharedView):
         else:
             return self.list(request)
         
-    def post(self, request, id=None):
+    def post(self, request, id=None, type=None, username=None, token=None):
         return Response({"error": "This method is not allowed for CustomUser. Use RegisterAPIView"})
     
     def put(self, request, id=None, type=None, username=None, token=None):
