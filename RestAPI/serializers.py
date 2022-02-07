@@ -138,6 +138,14 @@ class UserFollowingSerializer(ModelSerializer):
         model = UserFollowing
         fields = '__all__'
         
+    def create(self, validated_data):
+        user = validated_data.get('user')
+        following = validated_data.get('following')
+        if UserFollowing.objects.filter(user=following, following=user).exists():
+            UserFriend.objects.create(user=user, friend=following)
+            UserFriend.objects.create(user=following, friend=user)
+        return super().create(validated_data)
+        
 class UserFriendSerializer(ModelSerializer):
     class Meta:
         model = UserFriend

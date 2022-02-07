@@ -8,6 +8,7 @@ from .serializers import ChangeEmailSerializer, ChangePasswordSerializer, Change
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
 from .permissions import AllowPOSTOnly
 
 # Create your views here.
@@ -44,7 +45,7 @@ class CustomUserAPIView(SharedView):
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
     
-    def get(self, request, id=None, token=None, username=None, type=None):
+    def get(self, request, id=None, token=None, username=None, type=None, search_value=None):
         if type:
             return Response({'error': "Type argument not allowed"})
         
@@ -66,13 +67,19 @@ class CustomUserAPIView(SharedView):
             except:
                 return Response({'error': "Can't find user with provided username"})
             return Response(self.serializer_class(user).data)
+        elif search_value:
+            try:
+                users = CustomUser.objects.filter(username__icontains=search_value)
+                return Response(self.serializer_class(users, many=True).data)
+            except:
+                return Response({'error': 'There was a problem fetching search results'})
         else:
             return self.list(request)
         
-    def post(self, request, id=None, type=None, username=None, token=None):
+    def post(self, request, id=None, type=None, username=None, token=None, search_value=None):
         return Response({"error": "This method is not allowed for CustomUser. Use RegisterAPIView"})
     
-    def put(self, request, id=None, type=None, username=None, token=None):
+    def put(self, request, id=None, type=None, username=None, token=None, search_value=None):
         if username or token:
             return Response({'error': "Argument not allowed"})
         
@@ -112,22 +119,39 @@ class UserFollowingAPIView(SharedView):
             return self.retrieve(request, id=id)
         elif user_id:
             user_following = UserFollowing.objects.filter(user=user_id)
-            if not user_following.exists():
-                return Response("Can't find use with provided user_id")
             return Response(self.serializer_class(user_following, many=True).data)
         elif following_id:
             user_following = UserFollowing.objects.filter(following=following_id)
-            if not user_following.exists():
-                return Response("Can't find use with provided following_id")
             return Response(self.serializer_class(user_following, many=True).data)
         else:
             return self.list(request)
+        
+    def perform_destroy(self, request, *args, **kwargs):
+        print('delete')
+        instance = self.get_object()
+        user = instance.user
+        following = instance.following
+        friends = UserFriend.objects.filter(Q(user=user, friend=following) | Q(user=following, friend=user))
+        for friend in friends:
+            friend.delete()
+        return super().perform_destroy(request, *args, **kwargs)
         
     
 class UserFriendAPIView(SharedView):
     serializer_class = UserFriendSerializer
     queryset = UserFriend.objects.all()
     
+    def get(self, request, id=None, user_id=None):
+        if id:
+            return self.retrieve(request, id=id)
+        elif user_id:
+            user_following = UserFollowing.objects.filter(user=user_id)
+            if not user_following.exists():
+                return Response("Can't find use with provided user_id")
+            return Response(self.serializer_class(user_following, many=True).data)
+        else:
+            return self.list(request)
+        
 class ChatAPIView(SharedView):
     serializer_class = ChatSerializer
     queryset = Chat.objects.all()
@@ -142,7 +166,7 @@ class NotificationAPIView(SharedView):
     
 class PostAPIView(SharedView):
     serializer_class = PostSerializer
-    queryset = Post.objects.all()
+    queryset = Post.objects.order_by('date_time_posted').reverse()
     
 class CommentAPIView(SharedView):
     serializers = CommentSerializer
