@@ -127,7 +127,6 @@ class UserFollowingAPIView(SharedView):
             return self.list(request)
         
     def perform_destroy(self, request, *args, **kwargs):
-        print('delete')
         instance = self.get_object()
         user = instance.user
         following = instance.following
