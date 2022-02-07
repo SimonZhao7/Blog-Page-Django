@@ -4,7 +4,7 @@ from chat.models import Chat, Messages
 from notifications.models import Notification
 from posts.models import Post, Comment
 from .serializers import ChangeEmailSerializer, ChangePasswordSerializer, ChangeProfilePictureSerializer, CustomUserSerializer, RegisterSerializer, MessagesSerializer, NotificationSerializer, UserFollowingSerializer, UserFriendSerializer, \
-    ChatSerializer, PostSerializer, CommentSerializer, ChangeUsernameSerializer
+    ChatSerializer, PostSerializer, CommentSerializer, ChangeUsernameSerializer, HandleLikeSerializer
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
@@ -166,6 +166,11 @@ class NotificationAPIView(SharedView):
 class PostAPIView(SharedView):
     serializer_class = PostSerializer
     queryset = Post.objects.order_by('date_time_posted').reverse()
+    
+    def put(self, request, id=None):
+        self.serializer_class = HandleLikeSerializer
+        super().put(request, id)
+        return Response({'message': 'Successfully handled the like update'})
     
 class CommentAPIView(SharedView):
     serializers = CommentSerializer

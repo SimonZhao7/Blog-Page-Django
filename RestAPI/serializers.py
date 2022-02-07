@@ -190,6 +190,30 @@ class PostSerializer(ModelSerializer):
         model = Post
         fields = '__all__'
         
+class HandleLikeSerializer(ModelSerializer):
+    user_id = serializers.IntegerField(write_only=True)
+    
+    class Meta:
+        model = Post
+        fields = ['user_id']
+    
+    def validate_user_id(self, value):
+        if not CustomUser.objects.filter(pk=value).exists():
+            raise ValidationError('No user exists with this id')
+        return value
+    
+    def update(self, instance, validated_data):
+        new_id = validated_data.get('user_id')
+        # Remove user if it is already in the like list, otherwise add to list
+        if instance.users_liked.filter(pk=new_id).exists():
+            instance.users_liked.remove(new_id)
+            instance.likes -= 1
+        else: 
+            instance.users_liked.add(new_id)
+            instance.likes += 1
+        instance.save()
+        return instance
+    
 class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
