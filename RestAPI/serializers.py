@@ -190,6 +190,11 @@ class PostSerializer(ModelSerializer):
         model = Post
         fields = '__all__'
         
+class PostSerializerCreate(ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['user', 'image', 'aspect_ratio', 'caption']
+        
 class HandleLikeSerializer(ModelSerializer):
     user_id = serializers.IntegerField(write_only=True)
     

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from account.models import CustomUser
 
 # Create your models here.
@@ -10,8 +11,8 @@ class Post(models.Model):
     image = models.ImageField()
     caption = models.TextField(blank=True)
     users_liked = models.ManyToManyField(CustomUser, related_name='users_liked')
-    likes = models.IntegerField()
-    date_time_posted = models.DateTimeField()
+    likes = models.IntegerField(default=0)
+    date_time_posted = models.DateTimeField(default=timezone.now)
     
     def get_slug(self):
         return self.pk + 816020927

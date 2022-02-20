@@ -28,8 +28,6 @@ class CreatePostForm(ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.user = self.user
-        instance.date_time_posted = timezone.now()
-        instance.likes = 0
         
         if commit:
             instance.save()
